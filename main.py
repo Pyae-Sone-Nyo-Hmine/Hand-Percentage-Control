@@ -4,6 +4,7 @@ import math
 import numpy as np
 import socket
 
+# switch to server or not
 server = False
 
 if server:
