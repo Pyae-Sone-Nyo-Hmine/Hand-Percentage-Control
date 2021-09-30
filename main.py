@@ -4,7 +4,6 @@ import math
 import numpy as np
 import socket
 
-# switch to server or not
 server = False
 
 if server:
@@ -18,7 +17,7 @@ if server:
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
 mp_hands = mp.solutions.hands
-hands = mp_hands.Hands()
+hands = mp_hands.Hands(min_detection_confidence=0.7)
 
 # use webcam as camera
 cap = cv2.VideoCapture(0)
@@ -60,22 +59,23 @@ while True:
 
         # draw points on showing opencv gui
         for hand_landmarks in results.multi_hand_landmarks:
-            mp_drawing.draw_landmarks(image, hand_landmarks, mp_hands.HAND_CONNECTIONS)
+            mp_drawing.draw_landmarks(image, hand_landmarks, mp_hands.HAND_CONNECTIONS,mp_drawing_styles.get_default_hand_landmarks_style(),
+            mp_drawing_styles.get_default_hand_connections_style())
 
         if midpoint_distance < 90:
 
             # draw extra dots and lines for extra clarification
-            cv2.circle(image, thumb, 0, (255, 0, 0), 20)
-            cv2.circle(image, index_finger, 0, (255, 0, 0), 20)
-            cv2.line(image, thumb, index_finger, (255, 0, 0), 3)
+            cv2.circle(image, thumb, 0, (204, 204, 0), 20)
+            cv2.circle(image, index_finger, 0, (204, 204, 0), 20)
+            cv2.line(image, thumb, index_finger, (204, 204, 0), 3)
 
             # flip the image
             image = cv2.flip(image, 1)
-            cv2.putText(image, str(distance), (60, 70), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 165, 255), 3, cv2.LINE_AA)
+            cv2.putText(image, str(distance), (60, 70), cv2.FONT_HERSHEY_SIMPLEX, 2, (92, 168, 245), 3, cv2.LINE_AA)
 
         else:
             image = cv2.flip(image, 1)
-            cv2.putText(image, "Move hand to center", (40, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 165, 0), 2,
+            cv2.putText(image, "Move hand to center", (40, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, (153, 51, 255), 2,
                         cv2.LINE_AA)
             distance = None
 
@@ -89,4 +89,3 @@ while True:
     cv2.imshow("Hand Detection", image)
 
     cv2.waitKey(1)
-
